@@ -8,5 +8,7 @@ namespace Core_Assignment_1.DBContext
         public AppDBContext(DbContextOptions<AppDBContext> options):base(options) { }
 
         DbSet<RegistrationClass> Registrations {  get; set; }
+
+        
     }
 }
