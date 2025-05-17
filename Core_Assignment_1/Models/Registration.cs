@@ -2,7 +2,7 @@
 
 namespace Core_Assignment_1.Models
 {
-    public class RegistrationClass
+    public class Registration
     {
         [Key]
         public int ID { get; set; }

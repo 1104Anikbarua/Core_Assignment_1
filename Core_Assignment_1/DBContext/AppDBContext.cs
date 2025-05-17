@@ -7,8 +7,11 @@ namespace Core_Assignment_1.DBContext
     {
         public AppDBContext(DbContextOptions<AppDBContext> options):base(options) { }
 
-        DbSet<RegistrationClass> Registrations {  get; set; }
+        public DbSet<Registration> Registrations {  get; set; }
 
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
