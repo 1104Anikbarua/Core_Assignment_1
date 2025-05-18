@@ -7,25 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Core_Assignment_1.DBContext;
 using Core_Assignment_1.Models;
+using Core_Assignment_1.Services;
 
 namespace Core_Assignment_1.Controllers
 {
-    public class RegistrationController : Controller
+    public class RegistrationsController : Controller
     {
         private readonly AppDBContext _context;
 
-        public RegistrationController(AppDBContext context)
+        public RegistrationsController(AppDBContext context)
         {
             _context = context;
         }
 
-        // GET: Registration
+        // GET: Registrations
         public async Task<IActionResult> Index()
         {
             return View(await _context.Registrations.ToListAsync());
         }
 
-        // GET: Registration/Details/5
+        // GET: Registrations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +34,49 @@ namespace Core_Assignment_1.Controllers
                 return NotFound();
             }
 
-            var registrationClass = await _context.Registrations
+            var registration = await _context.Registrations
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (registrationClass == null)
+            if (registration == null)
             {
                 return NotFound();
             }
 
-            return View(registrationClass);
+            return View(registration);
         }
 
-        // GET: Registration/Create
+        // GET: Registrations/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Registration/Create
+        // POST: Registrations/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Email,Password")] RegistrationClass registrationClass)
+        public async Task<IActionResult> Create([Bind("ID,Name,Email,Password")] Registration registration)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(registrationClass);
-                await _context.SaveChangesAsync();
+                var result=_context.Add(registration);
+                var result2=await _context.SaveChangesAsync();
+                EmailSenderService emailSender = new EmailSenderService();
+                var success=emailSender.sendEmail(registration.Email);
+                //if (success)
+                //{
+                //    ViewBag.Message = "OTP sent successfully.";
+                //}
+                //else
+                //{
+                //    ViewBag.Error = "Failed to send OTP.";
+                //}
                 return RedirectToAction(nameof(Index));
             }
-            return View(registrationClass);
+            return View(registration);
         }
 
-        // GET: Registration/Edit/5
+        // GET: Registrations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +84,22 @@ namespace Core_Assignment_1.Controllers
                 return NotFound();
             }
 
-            var registrationClass = await _context.Registrations.FindAsync(id);
-            if (registrationClass == null)
+            var registration = await _context.Registrations.FindAsync(id);
+            if (registration == null)
             {
                 return NotFound();
             }
-            return View(registrationClass);
+            return View(registration);
         }
 
-        // POST: Registration/Edit/5
+        // POST: Registrations/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email,Password")] RegistrationClass registrationClass)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email,Password")] Registration registration)
         {
-            if (id != registrationClass.ID)
+            if (id != registration.ID)
             {
                 return NotFound();
             }
@@ -97,12 +108,12 @@ namespace Core_Assignment_1.Controllers
             {
                 try
                 {
-                    _context.Update(registrationClass);
+                    _context.Update(registration);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RegistrationClassExists(registrationClass.ID))
+                    if (!RegistrationExists(registration.ID))
                     {
                         return NotFound();
                     }
@@ -113,10 +124,10 @@ namespace Core_Assignment_1.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(registrationClass);
+            return View(registration);
         }
 
-        // GET: Registration/Delete/5
+        // GET: Registrations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,32 +135,32 @@ namespace Core_Assignment_1.Controllers
                 return NotFound();
             }
 
-            var registrationClass = await _context.Registrations
+            var registration = await _context.Registrations
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (registrationClass == null)
+            if (registration == null)
             {
                 return NotFound();
             }
 
-            return View(registrationClass);
+            return View(registration);
         }
 
-        // POST: Registration/Delete/5
+        // POST: Registrations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var registrationClass = await _context.Registrations.FindAsync(id);
-            if (registrationClass != null)
+            var registration = await _context.Registrations.FindAsync(id);
+            if (registration != null)
             {
-                _context.Registrations.Remove(registrationClass);
+                _context.Registrations.Remove(registration);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RegistrationClassExists(int id)
+        private bool RegistrationExists(int id)
         {
             return _context.Registrations.Any(e => e.ID == id);
         }

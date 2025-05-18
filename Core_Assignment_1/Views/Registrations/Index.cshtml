@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Core_Assignment_1.Models.RegistrationClass>
+﻿@model IEnumerable<Core_Assignment_1.Models.Registration>
 
 @{
     ViewData["Title"] = "Index";
@@ -37,9 +37,9 @@
                 @Html.DisplayFor(modelItem => item.Password)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                <a class="btn-primary btn" asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a class="btn-secondary btn" asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a class="btn-danger btn" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>
 }
