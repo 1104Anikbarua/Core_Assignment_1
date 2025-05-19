@@ -63,6 +63,8 @@ namespace Core_Assignment_1.Controllers
                 var result2=await _context.SaveChangesAsync();
                 EmailSenderService emailSender = new EmailSenderService();
                 var success=emailSender.sendEmail(registration.Email);
+
+                var lastInsertedID = _context.Registrations.Max(user => user.ID);
                 //if (success)
                 //{
                 //    ViewBag.Message = "OTP sent successfully.";
